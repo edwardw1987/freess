@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>FreeSS</title>
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/font-awesome.css') }}">
+    </head>
+    <body>
+        <div class="bs-example">
+              <!-- Table -->
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Server Address</th>
+                    <th>trys</th>
+                    <th>Status</th>
+                    <th>Delay</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+      $(function(){
+          // 
+          var ws = new WebSocket("ws://{{ request.host }}{{ reverse_url('freess.ws')}}");
+          ws.onopen = function() {
+             ws.send("Hello, world");
+          };
+          ws.onmessage = function (evt) {
+            if (evt.data != 'over') {
+              $(".table tbody").append(evt.data).find('tr:last').fadeIn();
+              $('[title]').tooltip();
+              ws.send('next')
+            }
+          };
+          function onClickPort(e){
+            var url = $(this).data("url");
+            $.get(url).done(function(data){
+              window.location.reload();
+            });
+          }
+          function onClickRestartAll(e){
+            var $a = $(this).siblings().children('a');
+            console.log($a.length)
+            $a.each(function(){
+              $.get($(this).data('url'));
+            })
+            window.location.reload();
+          }
+          $(".table").on("click", ".port", onClickPort)
+          .on("click", ".restart-all", onClickRestartAll)
+          ;
+        
+      })
+    </script>
+    </body>
+</html>

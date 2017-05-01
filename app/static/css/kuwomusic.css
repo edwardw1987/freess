@@ -1,0 +1,251 @@
+/*通用样式*/
+html, body {
+    font-size: 12px;
+}
+/*歌曲列表 */
+#song-list {
+
+    max-width: 800px;
+    width:100%;
+    padding: 20px;
+    margin: 0 auto;
+}
+.song-list-item {
+    background: transparent;
+    color:white;
+    border:none;
+    -webkit-transition: color .3s;
+       -moz-transition: color .3s;
+         -o-transition: color .3s;
+            transition: color .3s;
+    z-index: 1;
+}
+.song-item-label {
+    font-size: 1.05rem;
+    margin-top: 3px;
+    display:block;
+    overflow:hidden;
+}
+
+.song-list-frame {
+    /*height: 521px;*/
+    position: relative;
+    /*background-image: url('/static/img/bg-aoa-03.jpg');*/
+    background-size: 100%;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+.song-list-frame::after {
+    content: ' ';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0,.5);
+}
+.song-list-wrapper {
+    position: absolute;
+    /*left:50%;*/
+    /*width: 70%;*/
+    /*margin-left: -35%;*/
+    width: 100%;
+    /*margin-top: 50px;*/
+    bottom: 0;
+    height: 90%;
+    overflow-y: scroll;
+}
+/*播放按钮*/
+.play-btn {
+    font-size: 1.5rem;
+    padding: 0;
+    margin-right: 10px;
+    width: 20px;
+    border:none;
+    float: left;
+    color: white;
+    display: block;
+}
+.play-btn:hover,
+.play-btn:focus,
+.play-btn span:hover,
+.play-btn span:focus{
+    color:white;
+}
+.last-play:hover span,
+.last-play:focus span{
+    color:pink
+}
+/*分页按钮*/
+.pager {
+    position: absolute;
+    bottom: 15%;
+    right: 0;
+    /*width: 98%;*/
+    /*box-shadow: 2px 2px 10px #000;*/
+    z-index: 1;
+    line-height: 27px;
+    margin: -13.5px 1% 0 30px;
+    height: 27px;
+    border: none;
+    /*background: pink;*/
+}
+
+.pager li>a {
+    color: pink;
+    border:none;
+    background: transparent;
+    border-radius: 50%;
+    padding: 2.5px 10px;
+}
+
+/*错误提示*/
+#error-msg{
+    position: absolute;
+    color: white;
+    left: 0;
+    top: 0;
+    /*margin-top: -50px;*/
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    /*line-height: 521px;*/
+    font-size: 1.5rem;
+    z-index: 1;
+}
+/*等待中。。*/
+.wait-for {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    /*line-height: 521px;*/
+    font-size: 2rem;
+    z-index: 1;
+
+}
+.wait-for i {
+    color: white;
+}
+/*搜索条输入框*/
+.search-bar {
+    display: none;
+    position: absolute;
+    left: -100px;
+    bottom: 7px;
+    width: 140px;
+}
+.search-bar input {
+    background: white;
+    color: pink;
+    font-weight: bold;
+}
+/*搜索条按钮*/
+.btn-pink {
+    font-size: 2rem;
+    border: 0;
+    color: white;
+}
+.btn-pink:hover,
+.btn-pink:focus{
+    color: pink;
+}
+#btn-go {
+    position: absolute;
+    left: -7px;
+    z-index: 3;
+    border-radius: 0;
+    padding: 0 7px;
+    margin: 6px 12px;
+    margin-right: 0;
+}
+/*搜索条布局*/
+.btn-toolbar {
+    position: absolute;
+    right: 0;
+    z-index: 3;
+}
+/* 工具条 */
+#btn-items {
+    height: 46px;
+    overflow: hidden;
+    padding-left: 100px;
+    -webkit-transition: height .2s ease-out;
+       -moz-transition: height .2s ease-out;
+         -o-transition: height .2s ease-out;
+            transition: height .2s ease-out;
+}
+#btn-items li {
+    display: block;
+    position: relative;
+    height: 46px;
+    list-style: none;
+}
+/*scroll bar*/
+::-webkit-scrollbar{width:0px}
+/*KPOP logo*/
+.logo {
+    /*display: none;*/
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 93px;
+    height: 30px;
+    background: url('/static/img/logo_kpop.png') no-repeat center;
+    background-size: 100%;
+    z-index: 1;
+}
+/*切换样式*/
+.overflow-hidden{
+    overflow: hidden;
+}
+.btn-active {
+    color: pink;
+}
+.last-play {
+    color: pink;
+}
+/*sidebar*/
+#sidebar {
+    width: 31px;
+    border-right:1px solid white;
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+    height: 90%;
+
+}
+li {
+    list-style: none;
+}
+.sidebar-title {
+    position: relative;
+}
+#sidebar ul {
+    padding: 0px;
+    padding-right: 0;
+}
+.sidebar-title ul {
+    left: 30px;
+    top:0;
+    position: absolute;
+    display: none;
+    z-index: 1;
+    min-width: 150px;
+    width: 100%;
+    background-color: rgba(0,0,0,.8);
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+#sidebar a {
+    display: block;
+    text-align: center;
+}
+.sidebar-title > a{
+    color: #fff;
+    font-size: 1.2rem;
+}
+.sidebar-item > a{
+    color:pink;
+}

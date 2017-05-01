@@ -1,0 +1,52 @@
+<tr style="display: none;">
+    <td>{{ index }}</td>
+    <td>{{ resource.addr }} - {{ resource.country }}
+        {% if resource.ports|length > 0 %}
+
+        <a href="javascript:;" class="pull-right" style="text-decoration: none;">
+            {% for port in resource.ports %}
+
+            <span class="label label-success">Port {{ port }}</span>
+            {% endfor %}
+        </a>
+        {% endif %}
+    </td>
+    {#
+    <td>{{ resource.port }}</td>
+    <td>{{ resource.key }}</td>
+    <td>{{ resource.encrypt }}</td>
+    #}
+    <td>{{ resource.tries }}</td>
+    <td>
+        {% if resource.status == "ok" %}
+        <i class="fa fa-check text-success fa-lg"></i>
+        {% else %}
+        <i class="fa fa-close text-danger fa-lg"></i>
+        {% endif %}{{ resource.status }}
+    </td>
+    <td>{{ resource.delay }}</td>
+    <td>
+        <!-- Single button -->
+        {% if resource.status == "ok" %}
+        <div class="btn-group dr"
+             title="Start a Server"
+             data-placement="left"
+        >
+            <button type="button" class="btn btn-info dropdown-toggle"
+                    data-toggle="dropdown">
+                <i class="fa fa-power-off fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% for port in ports %}
+                <li><a href="javascript:;"
+                       data-url="{{ reverse_url('freess.run') }}?cmd={{ resource.cmd|urlencode }}&port={{ port }}"
+                       class="port">Port {{ port }}</a></li>
+                {% endfor %}
+                <li class="divider"></li>
+                <li class="restart-all"><a href="javascript:;"><b>Restart All</b></a></li>
+            </ul>
+        </div>
+        {% endif %}
+
+    </td>
+</tr>
