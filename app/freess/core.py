@@ -91,7 +91,7 @@ class ShadowsocksResource(Resource):
         port = "55%02d" % job_count
         pid_file = '/tmp/freess%02d.pid' % job_count
         log_file = '/tmp/freess%02d.log' % job_count
-        param = ("127.0.0.1", port, 600, pid_file, log_file, 'start')
+        param = ("0.0.0.0", port, 600, pid_file, log_file, 'start')
         # param = ("127.0.0.1", port, 600)
         cmdstr = cmd_tpl % param
         logging.info("cmdstr:%s" % cmdstr)
