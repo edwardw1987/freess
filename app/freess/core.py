@@ -75,6 +75,7 @@ class ShadowsocksResource(Resource):
         raise NotImplementedError()
 
     def iter_jobs(self):
+        # self.iter_params(self.get_response())
         for param in self.iter_params(self.get_response()):
             param_dict = {"addr": param[0], "port": param[1],
                           "key": param[2], "encrypt": param[3]}

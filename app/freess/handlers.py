@@ -2,14 +2,14 @@
 # @Author: edward
 # @Date:   2016-12-03 19:46:16
 # @Last Modified by:   edward
-# @Last Modified time: 2016-12-18 00:13:06
+# @Last Modified time: 2017-05-13 23:11:48
 
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler
 
 from core import run_cmd_by_port, PORTS
 from resource import iterShadowsocksResources
-
+from tornado.gen import coroutine
 
 class FreeSS(RequestHandler):
     def get(self):
@@ -51,8 +51,23 @@ class FreeSSWebSocket(WebSocketHandler):
     def on_close(self):
         print("WebSocket closed")
 
+import task
+from tornado.ioloop import IOLoop
+import logging
+
+LOG = logging.getLogger(__name__)
+
+class MainHandler(RequestHandler):
+    @coroutine
+    def get(self):
+        tsk = task.Freevpnss(IOLoop.current())
+        yield tsk.start() # callback, not return
+        for fn, arg in tsk.iter_jobs():
+            # arg["country"] = get_country_by_addr(arg["addr"])
+            LOG.info('============>>>%s' % fn(arg) )
 
 handlers = [
+    ('/main/?', MainHandler),
     ('/freess.html', FreeSS),
     ('/freess/localserver/run/', FreeSSLocalServer, None, 'freess.run'),
     ('/freess/ws/', FreeSSWebSocket, None, 'freess.ws'),
