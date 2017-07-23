@@ -51,7 +51,6 @@ class FreeSSWebSocket(WebSocketHandler):
     def on_close(self):
         print("WebSocket closed")
 
-import task
 from tornado.ioloop import IOLoop
 import logging
 
