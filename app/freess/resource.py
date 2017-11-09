@@ -42,8 +42,8 @@ def get_country_by_addr(addr):
 
 class FreeVPNSS(ShadowsocksResource):
   # url = 'http://freevpnss.cc'
-  url = 'http://get.freevpnss.me'
-
+  #url = 'http://get.freevpnss.me'
+  url='https://get.freevs.org/indexcn.html'
   def iter_params(self, response):
     self.pq = pq(response.content)
     sub_ele = self.pq('.row.text-center')[1]
@@ -75,6 +75,7 @@ class FreeVPNSS(ShadowsocksResource):
 
 class IShadow(ShadowsocksResource):
   url = 'http://ss.ishadowx.com/index.html'
+  #proxy = 'http://127.0.0.1:64548'
 
   def iter_params(self, response):
     self.pq = pq(response.content)
@@ -83,7 +84,7 @@ class IShadow(ShadowsocksResource):
     for hover_text_div in self.pq('.hover-text'):
       htd_pq = pq(hover_text_div)
       addr = htd_pq.children('h4').eq(0).children('span').eq(0).text()
-      port = htd_pq.children('h4').eq(1).text().split(u'Port：')[-1].strip()
+      port = htd_pq.children('h4').eq(1).children('span').eq(0).text().strip()
       password = htd_pq.children('h4').eq(2).children('span').eq(0).text()
       method = htd_pq.children('h4').eq(3).text().split(u'Method:')[-1].strip()
       e = [addr, port, password, method]
