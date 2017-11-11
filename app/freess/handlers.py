@@ -10,11 +10,23 @@ from tornado.websocket import WebSocketHandler
 from core import run_cmd_by_port, PORTS
 from resource import iterShadowsocksResources
 from tornado.gen import coroutine
+import json
+
 
 class FreeSS(RequestHandler):
     def get(self):
         self.render("freess.html")
 
+
+class ApiServerList(RequestHandler):
+    def get(self):
+        server_gen = iterShadowsocksResources()
+        ret = {
+            "server_list": list(server_gen),
+            "ports": PORTS
+        }
+        self.set_header('content-type', 'application/json')
+        self.write(json.dumps(ret))
 
 class FreeSSLocalServer(RequestHandler):
     def get(self):
@@ -70,4 +82,5 @@ handlers = [
     ('/freess.html', FreeSS),
     ('/freess/localserver/run/', FreeSSLocalServer, None, 'freess.run'),
     ('/freess/ws/', FreeSSWebSocket, None, 'freess.ws'),
+    ('/freess/api/server/?', ApiServerList, None, 'freess.api.serverlist')
 ]

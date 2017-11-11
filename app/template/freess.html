@@ -1,13 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
     <head>
         <meta charset="utf-8">
         <title>FreeSS</title>
         <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ static_url('css/font-awesome.css') }}">
+        <style>
+          #mask {
+              content: ' ';
+              position: fixed;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              background: #000;
+              opacity: .7;
+              z-index: 9999;
+              display: none;
+          }
+          #loading-icon {
+              width: 200px;
+              position: fixed;
+              top:46%;
+              margin-left: -100px;
+              left:50%;
+              display: none;
+              z-index: 9999;
+              color:white;
+              text-align: center;
+          }
+        </style>
     </head>
     <body>
-        <div class="bs-example">
+      <div id="mask"></div>
+      <div id="loading-icon">
+        <i class="fa fa-circle-o-notch fa-spin fa-4x"></i>
+        <p id="loading-hint"></p>
+      </div>
+
+        <div class="bs-example" ng-controller="serverCtrl">
               <!-- Table -->
               <table class="table table-bordered">
                 <thead>
@@ -21,26 +51,97 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr ng-repeat="server in serverList">
+                      <td>[[ $index + 1 ]]</td>
+                      <td>[[ server.addr ]]
+                          <a ng-if="server.ports.length > 0" href="javascript:;" class="pull-right" style="text-decoration: none;">
+                              <span ng-repeat="port in server.ports" class="label label-success">Port [[ port ]]</span>
+                          </a>
+                      </td>
+                      <td>[[ server.tries ]]</td>
+                      <td>
+                          <i ng-if="server.status == 'ok'" class="fa fa-check text-success fa-lg"></i>
+                          <i ng-if="server.status != 'ok'" class="fa fa-close text-danger fa-lg"></i>
+                      </td>
+                      <td>[[ server.delay ]]</td>
+                      <td>
+                          <!-- Single button -->
+                          <div class="btn-group dr"
+                               title="Start a Server"
+                               data-placement="left"
+                               ng-if="server.status == 'ok'"
+                          >
+                              <button type="button" class="btn btn-info dropdown-toggle"
+                                      data-toggle="dropdown">
+                                  <i class="fa fa-power-off fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" role="menu">
+                                  <li ng-repeat="port in ports"><a href="javascript:;"
+                                         data-url="{{ reverse_url('freess.run') }}?cmd=[[ server.cmd]]&port=[[ port ]]"
+                                         class="port">Port [[ port ]]</a></li>
+                                  <li class="divider"></li>
+                                  <li class="restart-all"><a href="javascript:;"><b>Restart All</b></a></li>
+                              </ul>
+                          </div>
+                      </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
     <script src="{{ static_url('js/jquery.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('js/angular.min.js') }}"></script>
+    <script>
+      function showLoadingIcon(text) {
+          var $mask = $('#mask'),
+              $loadingIcon = $('#loading-icon')
+          if (text === undefined) text = 'Loading...'
+          $mask.fadeIn(200);
+          $loadingIcon.show().find('#loading-hint').text(text)
+      }
+      function hideLoadingIcon() {
+          var $mask = $('#mask'),
+              $loadingIcon = $('#loading-icon')
+          $loadingIcon.hide()
+          $mask.fadeOut(200)
+      }
+
+      angular.module('app', [])
+      .config(['$interpolateProvider', function($interpolateProvider) {
+          $interpolateProvider.startSymbol('[[');
+          $interpolateProvider.endSymbol(']]');
+      }])
+      .controller('serverCtrl', ['$scope', '$http', function($scope, $http){
+          $scope.getServerList = function(){
+            showLoadingIcon()
+            $http({
+              method: 'GET',
+              url: 'http://{{ request.host }}{{ reverse_url("freess.api.serverlist")}}'
+            }).then(function(resp){
+              $scope.serverList = resp.data.server_list;
+              $scope.ports = resp.data.ports;
+              hideLoadingIcon()
+            })
+          }
+          $scope.getServerList()
+      }])
+      ;
+    </script>
     <script type="text/javascript">
       $(function(){
           // 
-          var ws = new WebSocket("ws://{{ request.host }}{{ reverse_url('freess.ws')}}");
-          ws.onopen = function() {
-             ws.send("Hello, world");
-          };
-          ws.onmessage = function (evt) {
-            if (evt.data != 'over') {
-              $(".table tbody").append(evt.data).find('tr:last').fadeIn();
-              $('[title]').tooltip();
-              ws.send('next')
-            }
-          };
+          // var ws = new WebSocket("ws://{{ request.host }}{{ reverse_url('freess.ws')}}");
+          // ws.onopen = function() {
+          //    ws.send("Hello, world");
+          // };
+          // ws.onmessage = function (evt) {
+          //   if (evt.data != 'over') {
+          //     $(".table tbody").append(evt.data).find('tr:last').fadeIn();
+          //     $('[title]').tooltip();
+          //     ws.send('next')
+          //   }
+          // };
           function onClickPort(e){
             var url = $(this).data("url");
             $.get(url).done(function(data){
