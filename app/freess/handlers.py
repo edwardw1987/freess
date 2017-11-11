@@ -12,7 +12,6 @@ from resource import iterShadowsocksResources
 from tornado.gen import coroutine
 import json
 
-
 class FreeSS(RequestHandler):
     def get(self):
         self.render("freess.html")
@@ -21,9 +20,12 @@ class FreeSS(RequestHandler):
 class ApiServerList(RequestHandler):
     def get(self):
         server_gen = iterShadowsocksResources()
+        server_list = list(server_gen)
         ret = {
-            "server_list": list(server_gen),
-            "ports": PORTS
+            "server_list": [s['result'] for s in server_list],
+            "ports": PORTS,
+            "url": server_list[0]['url'] if server_list else 'n/a'
+
         }
         self.set_header('content-type', 'application/json')
         self.write(json.dumps(ret))

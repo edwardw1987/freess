@@ -36,8 +36,19 @@
         <i class="fa fa-circle-o-notch fa-spin fa-4x"></i>
         <p id="loading-hint"></p>
       </div>
-
-        <div class="bs-example" ng-controller="serverCtrl">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-10">
+            <div ng-controller="serverCtrl">
+              <div class="page-header">
+                <h3>
+                  <i class="fa fa-lg fa-github"></i>
+                  <a target="_blank" href="https://github.com/edwardw1987/freess">
+                    edwardw1987/freess
+                  </a>
+                </h3>
+                <p ng-if="sourceFromUrl">Thanks to <a target="_blank" href="[[sourceFromUrl]]">[[ sourceFromUrl ]]</a></p>
+              </div>
               <!-- Table -->
               <table class="table table-bordered">
                 <thead>
@@ -52,43 +63,45 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="server in serverList">
-                      <td>[[ $index + 1 ]]</td>
-                      <td>[[ server.addr ]]
-                          <a ng-if="server.ports.length > 0" href="javascript:;" class="pull-right" style="text-decoration: none;">
-                              <span ng-repeat="port in server.ports" class="label label-success">Port [[ port ]]</span>
-                          </a>
-                      </td>
-                      <td>[[ server.tries ]]</td>
-                      <td>
-                          <i ng-if="server.status == 'ok'" class="fa fa-check text-success fa-lg"></i>
-                          <i ng-if="server.status != 'ok'" class="fa fa-close text-danger fa-lg"></i>
-                      </td>
-                      <td>[[ server.delay ]]</td>
-                      <td>
-                          <!-- Single button -->
-                          <div class="btn-group dr"
-                               title="Start a Server"
-                               data-placement="left"
-                               ng-if="server.status == 'ok'"
-                          >
-                              <button type="button" class="btn btn-info dropdown-toggle"
-                                      data-toggle="dropdown">
-                                  <i class="fa fa-power-off fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
-                              </button>
-                              <ul class="dropdown-menu" role="menu">
-                                  <li ng-repeat="port in ports"><a href="javascript:;"
-                                         data-url="{{ reverse_url('freess.run') }}?cmd=[[ server.cmd]]&port=[[ port ]]"
-                                         class="port">Port [[ port ]]</a></li>
-                                  <li class="divider"></li>
-                                  <li class="restart-all"><a href="javascript:;"><b>Restart All</b></a></li>
-                              </ul>
-                          </div>
-                      </td>
+                    <td>[[ $index + 1 ]]</td>
+                    <td>[[ server.addr ]]
+                      <a ng-if="server.ports.length > 0" href="javascript:;" class="pull-right" style="text-decoration: none;">
+                        <span ng-repeat="port in server.ports" class="label label-success">Port [[ port ]]</span>
+                      </a>
+                    </td>
+                    <td>[[ server.tries ]]</td>
+                    <td>
+                      <i ng-if="server.status == 'ok'" class="fa fa-check text-success fa-lg"></i>
+                      <i ng-if="server.status != 'ok'" class="fa fa-close text-danger fa-lg"></i>
+                    </td>
+                    <td>[[ server.delay ]]</td>
+                    <td>
+                      <!-- Single button -->
+                      <div class="btn-group dr"
+                        title="Start a Server"
+                        data-placement="left"
+                        ng-if="server.status == 'ok'"
+                        >
+                        <button type="button" class="btn btn-info dropdown-toggle"
+                        data-toggle="dropdown">
+                        <i class="fa fa-power-off fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li ng-repeat="port in ports"><a href="javascript:;"
+                            data-url="{{ reverse_url('freess.run') }}?cmd=[[ server.cmd]]&port=[[ port ]]"
+                          class="port">Port [[ port ]]</a></li>
+                          <li class="divider"></li>
+                          <li class="restart-all"><a href="javascript:;"><b>Restart All</b></a></li>
+                        </ul>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+      </div>
     <script src="{{ static_url('js/jquery.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
     <script src="{{ static_url('js/angular.min.js') }}"></script>
@@ -121,6 +134,7 @@
             }).then(function(resp){
               $scope.serverList = resp.data.server_list;
               $scope.ports = resp.data.ports;
+              $scope.sourceFromUrl = resp.data.url;
               hideLoadingIcon()
             })
           }

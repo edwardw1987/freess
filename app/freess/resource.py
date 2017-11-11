@@ -140,7 +140,7 @@ def iterShadowsocksResources():
       fn, arg = val
       #arg["country"] = get_country_by_addr(arg["addr"])
       print arg
-      yield fn(arg)
+      yield {'result': fn(arg), 'url':cls.url}
       # except:
       #     pass
       # gevent.joinall(jobs)
