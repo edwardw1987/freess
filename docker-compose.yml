@@ -7,7 +7,7 @@ freess:
     - "1988:1988"
   environment:
     - URL_PREFIX=/freess
-
+  restart: unless-stopped
 
 # mysql:
 #   image: hub.lenovo.com:5000/lenovo/ci_mysql:latest
