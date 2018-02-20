@@ -88,7 +88,7 @@
                         </button>
                         <ul class="dropdown-menu" role="menu">
                           <li ng-repeat="port in ports"><a href="javascript:;"
-                            data-url="{{ reverse_url('freess.run') }}?cmd=[[ server.cmd]]&port=[[ port ]]"
+                            data-url="{{ url_for('.localserver_run') }}?cmd=[[ server.cmd]]&port=[[ port ]]"
                           class="port">Port [[ port ]]</a></li>
                           <li class="divider"></li>
                           <li class="restart-all"><a href="javascript:;"><b>Restart All</b></a></li>
@@ -130,7 +130,7 @@
             showLoadingIcon()
             $http({
               method: 'GET',
-              url: 'http://{{ request.host }}{{ reverse_url("freess.api.serverlist")}}'
+              url: 'http://{{ request.host }}{{ url_for(".api_server")}}'
             }).then(function(resp){
               $scope.serverList = resp.data.server_list;
               $scope.ports = resp.data.ports;
@@ -145,7 +145,6 @@
     <script type="text/javascript">
       $(function(){
           // 
-          // var ws = new WebSocket("ws://{{ request.host }}{{ reverse_url('freess.ws')}}");
           // ws.onopen = function() {
           //    ws.send("Hello, world");
           // };
