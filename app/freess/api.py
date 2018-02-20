@@ -7,11 +7,11 @@ from resource import iterShadowsocksResources
 
 app = Blueprint("freess", __name__)
 
-@app.route("/freess")
+@app.route("/")
 def index():
     return render_template("freess.html")
 
-@app.route("/freess/api/server")
+@app.route("/api/server")
 def api_server():
     server_gen = iterShadowsocksResources()
     server_list = list(server_gen)
@@ -23,7 +23,7 @@ def api_server():
     }
     return jsonify(ret)
 
-@app.route("/freess/localserver/run")
+@app.route("/api/localserver/run")
 def localserver_run():
     port = request.args.get('port')
     cmd = request.args.get('cmd')

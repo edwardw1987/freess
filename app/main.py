@@ -3,7 +3,7 @@ from flask import Flask
 import freess
 from lib import util
 from lib.mylogger import init_logger
-
+import os
 
 def make_app(debug=False, **kwargs):
     app = Flask(__name__)
@@ -13,5 +13,6 @@ def make_app(debug=False, **kwargs):
 
 init_logger(__file__, "freess.log")
 app = make_app()
-app.register_blueprint(freess.app, url_prefix="/spa")
+url_prefix = os.getenv("URL_PREFIX", "")
+app.register_blueprint(freess.app, url_prefix=url_prefix)
 util.init_app(app)

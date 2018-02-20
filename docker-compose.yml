@@ -1,0 +1,18 @@
+freess:
+  image: edward/freess:latest
+  container_name: freess
+  ports:
+    - "8008:8008"
+    - "1987:1987"
+    - "1988:1988"
+  environment:
+    - URL_PREFIX=/freess
+
+
+# mysql:
+#   image: hub.lenovo.com:5000/lenovo/ci_mysql:latest
+#   container_name: ci_mysql
+#   ports:
+#     - "3306:3306"
+#   volumes:
+#     - /srv/mysql/cloud/data:/var/lib/mysql

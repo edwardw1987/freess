@@ -130,7 +130,7 @@
             showLoadingIcon()
             $http({
               method: 'GET',
-              url: 'http://{{ request.host }}{{ url_for(".api_server")}}'
+              url: '{{ url_for(".api_server")}}'
             }).then(function(resp){
               $scope.serverList = resp.data.server_list;
               $scope.ports = resp.data.ports;
