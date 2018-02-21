@@ -1,18 +1,27 @@
-freess:
-  image: edward/freess:latest
-  container_name: freess
-  ports:
-    - "8008:8008"
-    - "1987:1987"
-    - "1988:1988"
-  environment:
-    - URL_PREFIX=/freess
-  restart: unless-stopped
-
-# mysql:
-#   image: hub.lenovo.com:5000/lenovo/ci_mysql:latest
-#   container_name: ci_mysql
-#   ports:
-#     - "3306:3306"
-#   volumes:
-#     - /srv/mysql/cloud/data:/var/lib/mysql
+networks:
+  app_net:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+      - {subnet: 172.16.238.0/24}
+      - {subnet: '2001:3984:3989::/64'}
+      driver: default
+services:
+  freess:
+    command: ifconfig
+    container_name: freess
+    environment: [URL_PREFIX=/freess, REDIS_IP=172.16.238.12]
+    image: edward/freess:latest
+    links: ['redis:redis']
+    networks:
+      app_net: {ipv4_address: 172.16.238.10}
+    ports: ['8008:8008', '1987:1987', '1988:1988']
+    restart: unless-stopped
+  redis:
+    container_name: redis_freess
+    image: redis:latest
+    networks:
+      app_net: {ipv4_address: 172.16.238.12}
+    ports: ['6379:6379']
+version: '2.1'
