@@ -8,7 +8,6 @@ import tempfile
 
 import gevent
 import requests
-import zbarlight
 from PIL import Image
 from gevent import socket
 from pyquery import PyQuery as pq
@@ -74,8 +73,8 @@ class FreeVPNSS(ShadowsocksResource):
 
 
 class IShadow(ShadowsocksResource):
-  url = "https://global.ishadowx.net/"
-  #proxy = 'http://127.0.0.1:64548'
+  url = "https://en.ishadowx.net/"
+  proxy = 'http://127.0.0.1:64548'
 
   def iter_params(self, response):
     self.pq = pq(response.content)
