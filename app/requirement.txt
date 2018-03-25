@@ -11,3 +11,4 @@ shadowsocks==2.8.2
 SQLAlchemy==1.2.3
 zbarlight==1.2
 gunicorn
+psutil==5.4.3

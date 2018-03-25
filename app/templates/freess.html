@@ -6,28 +6,45 @@
         <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ static_url('css/font-awesome.css') }}">
         <style>
-          #mask {
-              content: ' ';
-              position: fixed;
-              width: 100%;
-              height: 100%;
-              top: 0;
-              background: #000;
-              opacity: .7;
-              z-index: 9999;
-              display: none;
-          }
-          #loading-icon {
-              width: 200px;
-              position: fixed;
-              top:46%;
-              margin-left: -100px;
-              left:50%;
-              display: none;
-              z-index: 9999;
-              color:white;
-              text-align: center;
-          }
+        #mask {
+            content: ' ';
+            position: fixed;
+            width: 130px;
+            height: 130px;
+            left: 50%;
+            top: 50%;
+            transform: translate3d(-50%, -50%, 0);
+            background: #000;
+            opacity: .7;
+            z-index: 9999;
+            display: none;
+            border-radius: 10px;
+        }
+        #loading-icon {
+            width: 200px;
+            position: fixed;
+            top: 45%;
+            margin-left: -100px;
+            left:50%;
+            display: none;
+            z-index: 9999;
+            color:white;
+            text-align: center;
+        }
+        #qrcode-box{
+          width: 200px;
+          height: 200px;
+          position: fixed;
+          top: 30%;
+          margin-left: -100px;
+          left: 45%;
+          display: none;
+          z-index: 9999;
+          box-shadow: 10px 10px 5px #888888;
+        }
+        .qrcode a:hover{
+          text-decoration: none;
+        }
         </style>
     </head>
     <body>
@@ -36,6 +53,7 @@
         <i class="fa fa-circle-o-notch fa-spin fa-4x"></i>
         <p id="loading-hint"></p>
       </div>
+      <div id="qrcode-box"></div>
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-10">
@@ -47,34 +65,39 @@
                     edwardw1987/freess
                   </a>
                 </h3>
-                <p ng-if="sourceFromUrl">Thanks to <a target="_blank" href="[[sourceFromUrl]]">[[ sourceFromUrl ]]</a></p>
               </div>
+              <p id="thanks-to" ng-if="sourceFromUrl">Thanks to <a target="_blank" href="[[sourceFromUrl]]">[[ sourceFromUrl ]]</a></p>
               <!-- Table -->
               <table class="table table-bordered">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Server Address</th>
-                    <th>trys</th>
-                    <th>Status</th>
-                    <th>Delay</th>
+                    <th>RemotePort</th>
+                    <th>LocalPort</th>
+                    <th>Password</th>
+                    <th>Encrpt</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr ng-repeat="server in serverList">
                     <td>[[ $index + 1 ]]</td>
-                    <td>[[ server.addr ]]
+                    <td>
+                      <span class="qrcode" data-uri="[[ server.uri ]]">
+                        <a href="javascript:;">
+                          <i class="fa fa-qrcode fa-lg"></i>
+                        </a>
+                      </span>
+                      [[ server.addr ]]
                       <a ng-if="server.ports.length > 0" href="javascript:;" class="pull-right" style="text-decoration: none;">
                         <span ng-repeat="port in server.ports" class="label label-success">Port [[ port ]]</span>
                       </a>
                     </td>
-                    <td>[[ server.tries ]]</td>
-                    <td>
-                      <i ng-if="server.status == 'ok'" class="fa fa-check text-success fa-lg"></i>
-                      <i ng-if="server.status != 'ok'" class="fa fa-close text-danger fa-lg"></i>
-                    </td>
-                    <td>[[ server.delay ]]</td>
+                    <td>[[ server.port || 'n/a' ]]</td>
+                    <td>[[ server.localport || 'n/a' ]]</td>
+                    <td>[[ server.key || 'n/a' ]]</td>
+                    <td>[[ server.encrypt ]]</td>
                     <td>
                       <!-- Single button -->
                       <div class="btn-group dr"
@@ -105,6 +128,7 @@
     <script src="{{ static_url('js/jquery.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
     <script src="{{ static_url('js/angular.min.js') }}"></script>
+    <script src="{{ static_url('js/jquery.qrcode.min.js') }}"></script>
     <script>
       function showLoadingIcon(text) {
           var $mask = $('#mask'),
@@ -119,13 +143,23 @@
           $loadingIcon.hide()
           $mask.fadeOut(200)
       }
-
+      function initQrcode(){
+        $('.qrcode').each(function(index, e){
+          $(e).qrcode({
+              // render: "table", //table方式
+              width: 150, //宽度
+              height: 150, //高度
+              text: $(e).data("uri")//任意内容            
+          })
+        })
+      }
       angular.module('app', [])
       .config(['$interpolateProvider', function($interpolateProvider) {
           $interpolateProvider.startSymbol('[[');
           $interpolateProvider.endSymbol(']]');
       }])
-      .controller('serverCtrl', ['$scope', '$http', function($scope, $http){
+      .controller('serverCtrl', ['$scope', '$http', '$timeout', 
+        function($scope, $http, $timeout){
           $scope.getServerList = function(){
             showLoadingIcon()
             $http({
@@ -135,10 +169,11 @@
               $scope.serverList = resp.data.server_list;
               $scope.ports = resp.data.ports;
               $scope.sourceFromUrl = resp.data.url;
-              hideLoadingIcon()
+              hideLoadingIcon();
             })
           }
           $scope.getServerList()
+
       }])
       ;
     </script>
@@ -169,10 +204,32 @@
             })
             window.location.reload();
           }
+          var timer;
+          function onEnterQrcode(e){
+            var uri = $(this).data("uri"),
+                $box = $("#qrcode-box")
+            ;
+            // console.log(uri)
+            timer = setTimeout(function(){            
+              $box.html("")
+              .qrcode({
+                text:uri,
+                width: 200,
+                height: 200
+              });
+              $box.fadeIn();
+            },111);
+          }
+          function onOutQrcode(e){
+            clearTimeout(timer)
+            $("#qrcode-box").fadeOut();
+          }
           $(".table").on("click", ".port", onClickPort)
           .on("click", ".restart-all", onClickRestartAll)
+          .on("mouseenter", ".qrcode", onEnterQrcode)
+          .on("mouseout", ".qrcode", onOutQrcode)
           ;
-        
+
       })
     </script>
     </body>
