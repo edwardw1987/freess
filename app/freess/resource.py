@@ -5,6 +5,8 @@ import tempfile
 
 import gevent
 import requests
+from PIL import Image
+from gevent import socket
 from pyquery import PyQuery as pq
 
 
