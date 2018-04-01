@@ -74,7 +74,7 @@ class FreeVPNSS(ShadowsocksResource):
 
 
 class IShadow(ShadowsocksResource):
-  url = "https://en.ishadowx.net/"
+  url = "http://ss.ishadowx.com"
   #proxy = 'http://127.0.0.1:64548'
 
   def iter_params(self, response):

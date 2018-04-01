@@ -15,7 +15,9 @@ socket.setdefaulttimeout(5)
 class Resource(object):
     url = None
     proxy = None
-
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+    }
     def get_response(self):
         proxy = getattr(self, "proxy")
         url = getattr(self, "url")
@@ -24,15 +26,18 @@ class Resource(object):
         params = dict(
             url=url,
             timeout=3,
-            allow_redirects=False,
+            headers=self.headers,
+            #allow_redirects=False,
         )
         if proxy:
             params["proxies"] = {'http': proxy}
         resp = requests.get(**params)
-        if resp.status_code != 200:
-            params["url"] = resp.headers["location"]
-            del params["allow_redirects"]
-            resp = requests.get(**params)
+        #if resp.status_code != 200:
+        #    params["url"] = resp.headers["location"]
+        #    del params["allow_redirects"]
+        #    resp = requests.get(**params)
+        logging.info("***url %s" % resp.url)
+        logging.info("***%s" % resp.content)
         return resp
 
 
