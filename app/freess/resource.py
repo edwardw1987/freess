@@ -18,7 +18,7 @@ class ShadowsocksResource(object):
 
 class IShadow(ShadowsocksResource):
     #url = "https://global.ishadowx.net/"
-    url = "https://en.ishadowx.net/"
+    url = "http://ss.ishadowx.com/"
 
     def iter_params(self, response):
         self.pq = pq(response.content)
