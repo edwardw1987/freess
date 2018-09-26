@@ -2,13 +2,14 @@
 # @Author: edward
 # @Date:   2016-12-03 18:02:57
 # @Last Modified by:   edward
-# @Last Modified time: 2017-04-15 21:59:47
+# @Last Modified time: 2018-09-26 22:32:10
 import logging
 import socket
 import subprocess
 import time
 import requests
 
+requests.packages.urllib3.disable_warnings()
 socket.setdefaulttimeout(5)
 
 
@@ -27,6 +28,7 @@ class Resource(object):
             url=url,
             timeout=3,
             headers=self.headers,
+            verify=False,
             #allow_redirects=False,
         )
         if proxy:

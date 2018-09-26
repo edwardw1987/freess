@@ -2,7 +2,7 @@
 # @Author: edward
 # @Date:   2016-12-03 17:58:47
 # @Last Modified by:   edward
-# @Last Modified time: 2017-05-13 23:17:38
+# @Last Modified time: 2018-09-26 22:50:11
 import re
 import tempfile
 
@@ -74,7 +74,8 @@ class FreeVPNSS(ShadowsocksResource):
 
 
 class IShadow(ShadowsocksResource):
-  url = "http://ss.ishadowx.com"
+  #url = "http://ss.ishadowx.com"
+  url = "https://us.ishadowx.net/"
   #proxy = 'http://127.0.0.1:64548'
 
   def iter_params(self, response):
